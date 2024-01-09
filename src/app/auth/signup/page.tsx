@@ -5,8 +5,9 @@ import styles from './page.module.css';
 import Navbar from '@/components/Navbar/Navbar';
 import '../auth.css';
 import Link from 'next/link';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import logo from '@/assets/logo.png';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface FormData {
@@ -89,16 +90,20 @@ export default function Signup() {
         })
             .then((res) => {
                 return res.json();
+
             })
             .then((response) => {
+
                 if (response.ok) {
+                    console.log(response);
                     toast(response.message, {
-                        type: 'success',
                         position: 'top-right',
+                        type: 'success',
                         autoClose: 2000
                     })
+
                     if (typeof window !== 'undefined') {
-                        window.location.href = '/auth/signin'
+                        window.location.href = "/auth/signin"
                     }
                     setFormData(
                         {
@@ -242,6 +247,8 @@ export default function Signup() {
                 </div>
 
             </div>
+            <ToastContainer />
+
         </div >
     )
 }

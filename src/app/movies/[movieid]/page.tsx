@@ -90,10 +90,7 @@ const MoviePage = () => {
                                     <p className='title'>
                                         {movie.title}
                                     </p>
-                                    <p className='rating'>
-                                        <BsFillStarFill className='star' />&nbsp;&nbsp;
-                                        {movie.rating}/10
-                                    </p>
+
                                     {/* <p className='languages'>
                                         {movie.languages.map((language: any, index: any) => {
                                             return (

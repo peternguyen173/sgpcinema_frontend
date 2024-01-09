@@ -109,15 +109,22 @@ const Navbar = () => {
 
             <div className='right'>
                 {loggedIn && user ? (
+
                     <div className="user-info">
+                        <a className="q" style={{ cursor: 'pointer' }} href="/promotion">Tin tức, ưu đãi</a>
+
                         <div className='fd'><BiUserCircle className='theme_icon1' /></div>
                         <a href='/profile'>Xin chào, {user.name}! </a>
                         <button className='theme_btn1 linkstylenone' style={{ cursor: 'pointer' }} onClick={handleLogout}>Đăng xuất</button>
                     </div>
                 ) : (
-                    <Link href="/auth/signin" className='theme_btn1 linkstylenone'>
-                        Đăng nhập
-                    </Link>
+                    <div>
+                        <a className="q" style={{ cursor: 'pointer' }} href="/promotion">Tin tức, ưu đãi</a>
+                        <Link href="/auth/signin" className='theme_btn1 linkstylenone'>
+
+                            Đăng nhập
+                        </Link>
+                    </div>
                 )}
 
             </div>

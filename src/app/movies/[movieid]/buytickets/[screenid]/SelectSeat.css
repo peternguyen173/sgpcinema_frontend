@@ -176,6 +176,19 @@
 
 }
 
+.seat-iswalkway {
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 2px;
+    background-color: #fff;
+
+}
+
 .seat-selected {
     color: white;
     background-color: var(--col1);
@@ -324,4 +337,28 @@ button {
 
 .selectseat .totalcont .totalcont1 .additional-options input {
     width: 25px;
+}
+
+.f {
+    font-size: 14px;
+}
+
+.curve-line {
+    width: calc(45% + 50px);
+    height: 60px;
+    left: 100%;
+    position: static;
+    display: flex;
+    top: 230px;
+    border-top: 2px solid #000;
+    border-radius: 50%;
+}
+
+.screen-text {
+    position: absolute;
+    top: 31%;
+    left: 50.5%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
 }

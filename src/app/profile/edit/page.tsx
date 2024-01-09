@@ -39,6 +39,7 @@ const EditProfilePage = () => {
             .then((res) => res.json())
             .then((data) => {
                 if (data.ok) {
+                    data.data.password = "";
                     setUser(data.data);
                 } else {
                     console.log(data);
@@ -48,13 +49,21 @@ const EditProfilePage = () => {
                 console.log(err);
             });
     };
+    console.log("dsds");
+
+    console.log(user.password);
 
     useEffect(() => {
         getUserData();
     }, []);
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        setUser({ ...user, [id]: value });
+        if (id === 'password') { // Nếu người dùng đang nhập mật khẩu mới
+            setNewPassword(value); // Cập nhật state cho newPassword
+            setUser({ ...user, password: value }); // Cập nhật trường password trong user
+        } else {
+            setUser({ ...user, [id]: value });
+        }
     };
     const handleShowPasswordInput = () => {
 
@@ -80,6 +89,18 @@ const EditProfilePage = () => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
             alert('Mật khẩu xác nhận không khớp');
+            return;
+        }
+        if (user.email.length === 0) {
+            alert('Bạn chưa nhập vào email thay đổi');
+            return;
+        }
+        if (user.name.length === 0) {
+            alert('Bạn chưa nhập vào Name thay đổi');
+            return;
+        }
+        if (user.phonenumber.length === 0) {
+            alert('Bạn chưa nhập vào Số điện thoại thay đổi');
             return;
         }
         try {
@@ -185,7 +206,7 @@ const EditProfilePage = () => {
                                             type='password'
                                             id='password'
                                             value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                     </div>
                                 )}

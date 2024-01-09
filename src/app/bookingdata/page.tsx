@@ -138,9 +138,7 @@ const ProfilePage = () => {
     };
     return (
         <div className='profile'>
-            <a href="/profile">
-                <button className='btn1'><h2>Quay lại</h2></button>
-            </a><h1 className='head'>Lịch sử đặt vé</h1>
+            <h1 className='head'>Lịch sử đặt vé</h1>
             <div className='user'>
                 <div className='details'>
                     <div className='detail'>
@@ -229,6 +227,9 @@ const ProfilePage = () => {
                     }
                 </div>
             </div>
+            <a href="/profile">
+                <button className='btn1'><h2>Quay về trang thông tin cá nhân</h2></button>
+            </a>
 
         </div>
     )

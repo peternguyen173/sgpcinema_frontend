@@ -12,8 +12,8 @@ const SelectSeatPage = () => {
 
 
     const searchParams = useSearchParams()
+    const date = searchParams.get('date');
 
-    const date = searchParams.get('date')
     const showtime = searchParams.get('time')
 
     const { movieid, cityname, screenid } = params
@@ -47,12 +47,14 @@ const SelectSeatPage = () => {
                     setScreen(response.data.screen)
                     setSelectedTime(response.data.movieSchedulesforDate[0])
                 }
+
                 else {
                     console.log(response)
                 }
             })
             .catch(err => console.log(err))
-
+        console.log("A2a")
+        console.log(movieSchedulesforDate)
     }
 
     const [movie, setMovie] = React.useState<any>(null)
@@ -127,6 +129,7 @@ const SelectSeatPage = () => {
             const currentSchedule = movieSchedulesforDate.find(
                 (schedule: any) => schedule.showTime === selectedTime.showTime
             );
+
             if (currentSchedule) {
 
                 const notAvailableSeats = currentSchedule.notAvailableSeats;
@@ -134,7 +137,6 @@ const SelectSeatPage = () => {
                 return (
 
                     <div>
-                        <p>dsdsds</p>
                         {screen.rows.map((row: any, rowIndex: any) => (
                             <div className="seat-row" key={rowIndex}>
                                 <p className="rowname">{row.rowname}</p>
@@ -151,16 +153,16 @@ const SelectSeatPage = () => {
                                         );
                                         return (
                                             <div key={seatIndex}>
-                                                {seat.iswalkway ?
+                                                {seat.isWalkway ?
                                                     <span className='seat-iswalkway'>
-                                                        {seatIndex + 1}
+                                                        <div className='f'>{row.rowname}{seatIndex + 1}</div>
                                                     </span> :
                                                     notAvailableSeats.find((s: any) => (
                                                         s.rowname === seat.rowname &&
                                                         s.seat_id === seat.seat_id
                                                     )) ?
                                                         <span className='seat-unavailable'>
-                                                            {seatIndex + 1}
+                                                            <div className='f'>{row.rowname}{seatIndex + 1}</div>
                                                         </span>
                                                         :
                                                         <span className={
@@ -173,7 +175,7 @@ const SelectSeatPage = () => {
                                                                 seat
                                                             )}
                                                         >
-                                                            {seatIndex + 1}
+                                                            <div className='f'>{row.rowname}{seatIndex + 1}</div>
                                                         </span>
 
                                                 }
@@ -330,50 +332,65 @@ const SelectSeatPage = () => {
             });
 
             const promotionsData = await promotionsResponse.json();
-
+            console.log("sdsds")
+            console.log(date)
             if (promotionsData.ok) {
-                const currentDate = new Date();
-                const validPromotion = promotionsData.data.find((promotion: any) => {
-                    const startDate = new Date(promotion.startDate);
-                    const expiryDate = new Date(promotion.expiryDate);
-                    return startDate < currentDate && currentDate < expiryDate;
-                });
+                if (date) {
+                    console.log("sdsds")
+                    console.log(date)
+                    const formattedDateString = date.split(' (')[0]; // Loại bỏ phần không cần thiết sau giờ
+                    const currentDate = new Date(formattedDateString);
 
-                let totalPrice = basePrice;
-                let discountAmount = 0;
+                    const validPromotion = promotionsData.data.find((promotion: any) => {
+                        const startDate = new Date(promotion.startDate);
+                        const expiryDate = new Date(promotion.expiryDate);
+                        return startDate < currentDate && currentDate < expiryDate;
+                    });
+                    console.log(validPromotion)
+                    console.log("jkhoi")
 
-                if (validPromotion) {
-                    if (validPromotion.type === 'percentage') {
-                        discountAmount = (validPromotion.discount / 100) * basePrice;
-                        totalPrice -= discountAmount;
-                        setDiscount(discountAmount);
-                    } else if (validPromotion.type === 'fixed') {
-                        totalPrice -= validPromotion.discountAmount;
-                        setDiscount(validPromotion.discountAmount);
+                    let totalPrice = basePrice;
+                    let discountAmount = 0;
+                    console.log(validPromotion)
+                    console.log(currentDate)
+                    console.log("a")
+                    console.log(selectedTime)
+
+                    if (validPromotion) {
+                        if (validPromotion.type === 'percentage') {
+                            discountAmount = (validPromotion.discount / 100) * basePrice;
+                            totalPrice -= discountAmount;
+                            setDiscount(discountAmount);
+                        } else if (validPromotion.type === 'fixed') {
+                            totalPrice -= validPromotion.discount;
+                            setDiscount(validPromotion.discount);
+                        }
+                        const burnPrice = 40000 * burnQuantity;
+                        const waterPrice = 20000 * waterQuantity;
+                        totalPrice = totalPrice + burnPrice + waterPrice;
+
+                        setFinalPrice(totalPrice);
+
+                        // Check if additional prices need to be added
+
+                        setAdditionalPrice(additionalPrice);
+                        setFinalPrice(totalPrice + additionalPrice);
+                    } else {
+                        // No valid promotion
+                        setDiscount(0);
+                        setAdditionalPrice(0);
+                        setFinalPrice(totalPrice);
                     }
-                    const burnPrice = 40000 * burnQuantity;
-                    const waterPrice = 20000 * waterQuantity;
-                    totalPrice = totalPrice + burnPrice + waterPrice;
-
-                    setFinalPrice(totalPrice);
-
-                    // Check if additional prices need to be added
-
-                    setAdditionalPrice(additionalPrice);
-                    setFinalPrice(totalPrice + additionalPrice);
                 } else {
-                    // No valid promotion
-                    setDiscount(0);
-                    setAdditionalPrice(0);
-                    setFinalPrice(totalPrice);
+                    console.log('Error fetching promotions.');
                 }
-            } else {
-                console.log('Error fetching promotions.');
             }
         } catch (error) {
             console.error('Error:', error);
         }
     };
+    console.log(date)
+    console.log("jkhoi")
     // Gọi hàm tính toán giá cuối cùng khi selectedSeats thay đổi hoặc component được render
     useEffect(() => {
         calculateTotalPrice();
@@ -429,6 +446,9 @@ const SelectSeatPage = () => {
             .catch(err => console.log(err))
 
     }
+    console.log("b")
+
+    console.log(selectedTime)
 
 
     return (
@@ -454,7 +474,7 @@ const SelectSeatPage = () => {
                                         setSelectedTime(time)
                                         setSelectedSeats([])
                                     }} key={index}>
-                                    {time.showTime}
+                                    Giờ chiếu: {time.showTime}
                                 </h3>
                             ))
                         }
@@ -473,6 +493,11 @@ const SelectSeatPage = () => {
                             <p>Checked</p>
                         </div>
                     </div>
+                    <p className="screen-text">Màn hình</p>
+                    <br></br>
+
+                    <div className="curve-line"></div>
+                    <br></br>
 
                     {generateSeatLayout()}
 
@@ -510,7 +535,7 @@ const SelectSeatPage = () => {
                                     </label>
                                 </div><br></br>
 
-                                <h3> {finalPrice} đ</h3>
+                                <h3>{finalPrice !== null ? Math.max(0, finalPrice) : 0} đ</h3>
                                 <br></br>
                                 <button
                                     className='theme_btn1 linkstylenone'
